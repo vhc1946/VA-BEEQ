@@ -1,6 +1,4 @@
-
-var repo = '../../repo/'; //quick tie to repo
-var {cstmr,addrss} = require(repo + 'toolbox/things/vogel-customers.js');
+var {cstmr,addrss} = require('./old-customers.js');
 var {quotels} = require('./lstore.js');
 
 const {AddBuild} = require('./additquote.js');

@@ -1,4 +1,4 @@
-var {BottomAddTable} = require('../../repo/toolbox/intables.js');
+var {BottomAddTable} = require('./intables.js');
 
 
 class AddBuild extends BottomAddTable{

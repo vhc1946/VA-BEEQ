@@ -19,7 +19,7 @@ var {
 } = require('./js/routes.js');
 
 
-var {appuser} = require('../repo/toolbox/things/vogel-users.js');
+var {aappuser} = require('./bin/repo/ds/users/vogel-users.js');
 
 // Get WindowKey class
 var {
@@ -42,7 +42,7 @@ var curuse = {
 
 // Set usersdb variable on load
 // appuser() attempts to load the user of the this computer
-var usersdb = ((au = appuser())=>{
+var usersdb = ((au = aappuser())=>{
     this.cuser = au.cuser; //to keep the paths consistent incase a user signs in on a different computer
     this.droot ='C:/Dev/RESPRES/db/users/'; //path.join(au.cuser.spdrive, 'Vogel - Res HVAC');
     this.id = 'uname'; //unique value for
@@ -79,7 +79,7 @@ var usersdb = ((au = appuser())=>{
                     /* IF a user is not in the user list
 
                     */
-                    this.db.insert(appuser({uname:rname}),(err,doc)=>{
+                    this.db.insert(aappuser({uname:rname}),(err,doc)=>{
                         if(doc){
                             curuse.uinf = doc;
                             curuse.uqdb = dbtools.LOADdb(this.droot + curuse.uinf.uname + qlfileext,qlid);
@@ -95,7 +95,7 @@ var usersdb = ((au = appuser())=>{
     return this;
 })();
 
-let tuser = appuser();
+let tuser = aappuser();
 let winkey = new WindowKey(
     getProductSheets(
         getProductCode('windows'),

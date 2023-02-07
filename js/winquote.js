@@ -4,8 +4,7 @@
 
 var $ =require('jquery');
 
-var repo = '../../repo/';
-var {BottomAddTable} = require(repo + 'toolbox/intables.js');
+var {BottomAddTable} = require('./intables.js');
 
 var {WindowKey} = require('../js/keymaker.js');
 

@@ -5,7 +5,7 @@ const {ipcRenderer} = require('electron');
 var {quotels}=require('../js/lstore.js');
 var {dashroutes}=require('../js/routes.js');
 
-var {stdbook}=require('../../repo/toolbox/views/vg-stdbook.js');
+var {stdbook}=require('../bin/repo/gui/js/layouts/vg-stdbook.js');
 
 var {WinBuild}=require('../js/winquote.js');
 var {GBlockBuild}=require('../js/gbquote.js');
