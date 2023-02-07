@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <script> window.$ = window.jQuery = require("jquery");</script>
+        <title>BEE Main</title>
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oswald"/>
+        <link rel="stylesheet" href="../css/quote-general.css"/>
+        <link rel="stylesheet" href="../css/quote-table-info-styles.css"/>
+        <link rel="stylesheet" href="../css/quote-table-styles.css"/>
+        <link rel="stylesheet" href="../css/quote-editor-styles.css"/>
+    </head>
+    <body>
+        <style>
+            #quote-header{
+                display: grid;
+                grid-template-columns: 1fr 2fr 1fr;
+                justify-content: center;
+                background-color: var(--color-2);
+                margin-bottom: 20px;
+            }
+            #quote-header>div:nth-child(2){ /* TITLE HEADER*/
+                margin:0;
+                padding-top:5px;
+                padding-bottom:5px;
+            
+                color: rgb(255, 255, 255);
+                text-align: center;
+                font-size: var(--label-1);
+                font-weight: bold;
+            
+                background-color: var(--color-1);
+            }
+            .quote-header-nav{
+                position: relative;
+                display:flex;
+                
+                width: 100%;
+                justify-content: flex-end;
+                align-items: flex-start;
+            }
+            .quote-header-nav>img:last-child{
+                margin-left: 10px;
+            }
+            .quote-header-nav-button:hover{
+                opacity: .5;
+            }
+        </style>
+        <!--QUOTE DASH NAV ----------------------------------------------------
+        -->
+        <div id="quote-header">
+            <div>USER INFO
+                <div>User Name</div> <!--Current user logged in-->
+                <div>ON/OFF line</div> <!--Message for connectivity-->
+            </div>
+            <div>RESIDENTIAL QUOTE DASH</div>
+            <!--QUOTE DASH NAV
+            -->
+            <div class="quote-header-nav">
+                <img id="quote-dash-usersettings" class="quote-header-nav-button" src="../../repo/assets/icons/user-settings.png"/><!--USER SETTINGS-->
+                <img id="quote-dash-userloginout" class="quote-header-nav-button" src="../../repo/assets/icons/Login-out-icon.png"/><!--LOG IN / OUT-->
+            </div>
+        </div>
+
+        <!--------------------------------------------------------------------->
+
+
+        <div id="quote-container">
+            <div class="quote-table-descrs">
+                <div id="quote-table-filters">
+                    <div>CONSULTANT</div><input type="search" 
+                                                 id="quote-table-techid" 
+                                                 class="quote-table-filter" 
+                                                 list="rr-userid-list">
+                </div>
+            </div>
+            <div class="quote-table-summary">
+                <div>QUOTED</div><div id="quote-total-commish">$0</div>
+                <div>OPEN</div><div id="quote-table-open-cnt">0</div>
+                <div>LOST</div><div id="quote-table-deni-cnt">0</div>
+                <div>ACTIVE</div><div id="quote-sbmt-cnt">0</div>
+            </div>
+            <div>
+                <!--Leaving empty for now-->
+            </div>
+        </div>
+        <!------------------------------------------------------>
+
+
+        <!--QUOTE TABLES/NAVIGATION----------------------------------->
+            <!-- QUOTE TABLE NAVIGATION ------------------------------------------------- -->
+        <div id="quote-tables-container">
+            <div id="quote-tables-nav">
+                <div id="quote-table-switch-open" class="quote-table-switch quote-table-switch-selected">OPEN</div>
+                <div id="quote-table-switch-closed" class="quote-table-switch">CLOSED</div>
+
+
+                <!--ADDED the below chunck very recently.  Has not been tested for table functionality-->
+                <style>
+                    .quote-actions-nav{
+                        position: relative;
+                        display:flex;
+                        
+                        width: 100%;
+                        justify-content: flex-end;
+                        align-items: flex-end;
+                    }
+                    .quote-action-button:hover{
+                        opacity: .5;
+                    }
+
+                </style>
+                <div class="quote-actions-nav">
+                    <img id="quote-action-createnewquote" class="quote-action-button" src="../../repo/assets/icons/create-new.png"/><!--CREATE NEW QUOTE-->
+                    <img id="quote-action-resumelastquote" class="quote-action-button" src="../../repo/assets/icons/continue-icon.png"/><!--RESUME LAST QUOTE-->
+                </div>
+            </div>
+            <!------------------------------------------------------------------------------>
+
+            <!-- QUOTE TABLES ---------------------------------------------------------------
+                 Desired views can be added below as a table element. A corresponding button
+                  is put in the nav element. Refer to quotedash.js for further setup.
+            -->
+
+            <!--OPEN QUOTES
+            -->
+            <table id="quote-table-open" class="quote-table">
+
+            </table>
+            <!--CLOSED QUOTES
+            -->
+            <table id="quote-table-closed" class="quote-table" style="display: none;">
+
+            </table>
+            <!------------------------------------------------------------------------------>
+
+        </div>
+
+        <!-- DATALIST FOR INPUTS ----------------------------------------------------------
+        -->
+        <div> 
+            <datalist id="rr-userid-list"><!--RR USER CODE LIST-->
+            </datalist>
+        </div>
+        <!--------------------------------------------------------------------------------->
+    </body>
+
+
+    <script>
+        const {ipcRenderer} = require('electron');
+
+        var {SetDataList,
+             GetDataList} = require('../../repo/toolbox/displaytools.js');
+        var {UQuote,
+             UserQuotes} = require('../../repo/toolbox/userquotes.js');
+
+        var {dashroutes} = require('../js/routes.js'); //Routes to Main Process
+        var {userls,
+             quotels} = require('../js/lstore.js');
+
+        var { // Service Display Files
+            qddom,
+            Quotes,
+            QuoteDisplay,
+            setViewSwitches,
+
+            CreateNewQuote,
+            LoadLastQuote,
+            winquote
+        } = require('../js/quotedash.js');
+
+        /* User Filtering ///////////////////////////////////////
+        */
+        /* Set all user input validation/events
+            PASS:
+                - fltrs = object from srdom
+                  containing the input elements
+                  that need the change event
+            Takes filter and with the values, sets
+             a change event that refreshes the
+             display with the new values. Also
+             included will be input validation
+             to flag any bad values from getting
+             in.
+        */
+        var SetInputFilterEvents = (fltrs)=>{
+            if(fltrs){
+                for(let f in fltrs){
+                    let inp = document.getElementById(fltrs[f]);
+                    if(inp){
+                        inp.addEventListener('change',fltrchange);
+                    }
+                }
+            }
+        }
+        
+        /* Change event that updates all the Referral table
+        */
+        var fltrchange = (ele)=>{
+            RefreshRefLists(mqlist);
+        }
+        
+        /* Get user filters from screen
+            PASSED
+                - status = Referral status code
+                - fltrs = object containing input
+                          elements.
+        */
+        var viewfltr = (status,fltrs)=>{
+            var fltr = {};
+            if(fltrs){
+                for(let f in fltrs){ //loop through all the filter elements
+                    let inp = document.getElementById(fltrs[f]);
+                    if(inp){
+                        if(inp.value != ''){
+                            fltr[f] = inp.value;
+                        }else{}//console.log('blank');}
+                    }else{}//console.log('No element');}
+                }
+            }
+            if(status){
+                fltr.status = status;
+            }
+            return fltr;
+        }
+        /////////////////////////////////////////////////////////
+        
+        
+        //current user
+        var curruser = new UserQuotes(JSON.parse(localStorage.getItem(userls.curruser))); //load current user from local storage
+
+        
+        // GET referal list from local storage, and setup display
+        var mqlist = new Quotes(curruser.quotes);
+
+        var pkey =null; //JSON.parse(localStorage.getItem(quotels.qkey));
+
+        var userlist = JSON.parse(localStorage.getItem(userls.allusers));
+
+        SetDataList(mqlist.GETqlist(),qddom.qview.utils.datalist);
+
+        SetInputFilterEvents(qddom.qview.utils.userfilters);
+
+        // Refresh the tables after updates are made
+        var RefreshQLists = (mlist)=>{
+            openList.SETqlist(mlist.TRIMqlist(viewfltr('O',qddom.qview.utils.userfilters)),qddom.qview.open);
+            openList.SetTable();
+            closeList.SETqlist(mlist.TRIMqlist(viewfltr('C',qddom.qview.utils.userfilters)),qddom.qview.close);
+            closeList.SetTable();
+        }
+
+        // Initialize the needed lists for display
+        var openList = new QuoteDisplay(mqlist.TRIMqlist(viewfltr('O',qddom.qview.utils.userfilters)),qddom.qview.open);
+        var closeList = new QuoteDisplay(mqlist.TRIMqlist(viewfltr('C',qddom.qview.utils.userfilters)),qddom.qview.closed);
+
+        setViewSwitches(qddom.qview);
+        
+        CreateNewQuote(dashroutes.openquote,()=>{
+            let nq = winquote();
+            nq.key = pkey || JSON.stringify(localStorage.getItem(quotels.qkey)) || null;
+            //if(curruser.AddAQuote(nq)){
+                console.log(nq);
+                localStorage.setItem(userls.curruser,JSON.stringify(curruser.uq));
+                localStorage.setItem(quotels.lastquote,JSON.stringify(nq))
+                mqlist.SETqlist(curruser.uq.quotes);
+                return curruser.uq.quotes;
+            //}
+            //return false;
+        });
+
+        LoadLastQuote(dashroutes.openquote,JSON.parse(localStorage.getItem(quotels.lastquote)));
+        
+        ipcRenderer.send(dashroutes.getuser,(curruser.uq) ? curruser.uq.uname : null);
+        ipcRenderer.send(dashroutes.getkey,false);
+        
+        /*Get an upto date price key
+        */
+        ipcRenderer.on(dashroutes.getkey,(eve,data)=>{
+            if(data){
+                console.log('Key has been Updated...');
+                console.log(data);
+                pkey = data;
+                localStorage.setItem(quotels.qkey,JSON.stringify(pkey));
+            }else{
+                console.log('Key NOT Found...');
+            }
+        });
+        /* Get a users information and quotes
+        */
+        ipcRenderer.on(dashroutes.getuser,(err,data)=>{
+            console.log(data);
+            if(data){
+                curruser.uq = data;
+                localStorage.setItem(userls.curruser,JSON.stringify(curruser.uq));
+            }
+        });
+
+
+    </script>
+</html>
