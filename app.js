@@ -99,7 +99,7 @@ let tuser = aappuser();
 let winkey = new WindowKey(
     getProductSheets(
         getProductCode('windows'),
-        reader.readFile(tuser.cuser.spdrive + '/Vogel - Bldg Env/Pricing Files/Price Book.xlsx')
+        reader.readFile(path.join(__dirname,'Price Books/Price Book.xlsx'))//reader.readFile(tuser.cuser.spdrive + '/Vogel - Bldg Env/Pricing Files/Price Book.xlsx')
     )
 );
 
