@@ -306,6 +306,35 @@ class BEEQuote{
           console.log(this.GETquote());
           this.SAVEquote();
         })
+        
+
+        // Add a mutation observer to detect when a child is removed from each table
+        const gbtableobserver = this.gbbuild.table;
+
+        const gbobserver = new MutationObserver(() => {
+            //console.log('callback that runs when observer is triggered');
+            let refreshed = this.gbbuild.REFRESHbuild()
+            if (refreshed) {
+              this.GETquote()
+              this.SAVEquote()
+            }
+        });
+
+        gbobserver.observe(gbtableobserver, {subtree: true, childList: true});
+
+        // Add a mutation observer to detect when a child is removed from each table
+        const wintableobserver = this.winbuild.table;
+
+        const winobserver = new MutationObserver(() => {
+            //console.log('callback that runs when observer is triggered');
+            let refreshed = this.winbuild.REFRESHbuild()
+            if (refreshed) {
+              this.GETquote()
+              this.SAVEquote()
+            }
+        });
+
+        winobserver.observe(wintableobserver, {subtree: true, childList: true});
     }
 
     GETquote = ()=>{
@@ -343,8 +372,10 @@ class BEEQuote{
     }
 
     SETgbsummary=()=>{
+        console.log("Setting glass block summary")
         let list = document.getElementById(this.bqdom.summary.glassblock.list.cont);
         let gbuild = this.quot.data.glassblocks.build;
+        console.log("GBUILD IN SET GBSUMMARY", gbuild)
 
         list.innerHTML = '';
         if(gbuild){
@@ -457,7 +488,7 @@ class BEEQuote{
 
     SETaddsummary=()=>{
         let list = document.getElementById(this.bqdom.summary.additions.list.cont);
-        console.log('Additions: ',this.quot.data.additions);
+        //console.log('Additions: ',this.quot.data.additions);
         let addbuild = this.quot.data.additions.build;
 
         list.innerHTML = '';
@@ -529,7 +560,7 @@ class BEEQuote{
     /*  CUSTOMER STUFF ////////////////////////////
     */
     SETcustomer=()=>{
-      console.log(this.quot.customer)
+      //console.log(this.quot.customer)
       document.getElementById(this.bqdom.customer.id).value = this.quot.customer.id || '';
       document.getElementById(this.bqdom.customer.fname).value = this.quot.customer.fname || '';
       document.getElementById(this.bqdom.customer.lname).value = this.quot.customer.lname || '';
@@ -570,7 +601,7 @@ class BEEQuote{
 
       this.quot.notes=document.getElementById(this.bqdom.customer.notes).value;
 
-      console.log(this.quot.customer);
+      //console.log(this.quot.customer);
     }
     ///////////////////////////////////////////////
 
@@ -587,7 +618,7 @@ class BEEQuote{
       document.getElementById(this.bqdom.home.coolload).value=this.quot.home.coolload||'';
     }
     GEThome=()=>{
-      console.log(this.quot.home.sf);
+      //console.log(this.quot.home.sf);
       this.quot.home.sf=document.getElementById(this.bqdom.home.sf).value;
       this.quot.home.atticsf=document.getElementById(this.bqdom.home.atticsf).value;
       this.quot.home.roofmake=document.getElementById(this.bqdom.home.roofmake).value;
@@ -596,7 +627,7 @@ class BEEQuote{
       this.quot.home.direction=document.getElementById(this.bqdom.home.direction).value;
       this.quot.home.heatload=document.getElementById(this.bqdom.home.heatload).value;
       this.quot.home.coolload=document.getElementById(this.bqdom.home.coolload).value;
-      console.log(this.quot.customer)
+      //console.log(this.quot.customer)
     }
     ///////////////////////////////////////////////
 
@@ -783,7 +814,7 @@ class BEEQuote{
     }
 
     SAVEquote = ()=>{//Save Work Order to localStorage
-      console.log('Saveing Quote: ',this.quot);
+      //console.log('Saveing Quote: ',this.quot);
       this.quot.id = document.getElementById(this.bqdom.id).value;
       localStorage.setItem(quotels.curquote,JSON.stringify(this.quot));
       var uqlist = JSON.parse(localStorage.getItem(quotels.uqlist));

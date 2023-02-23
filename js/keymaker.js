@@ -415,6 +415,8 @@ class WindowKey{
 
     GETuptier = (tname)=>{
         for(let x=0;x<this.key.windows.length;x++){
+            //console.log("418:::::::::::", this.key.windows[x].info.tier, tname)
+            //console.log("NEXT::::::::::::", this.key.windows[x+1])
             if(tname == this.key.windows[x].info.tier){
                 return (x+1 < this.key.windows.length) ? this.key.windows[x+1] : null;
             }

@@ -47,7 +47,7 @@ var dashdom = {
 */
 var LOADqlist = (aquote)=>{
   let uqlist = JSON.parse(localStorage.getItem(quotels.uqlist));
-  console.log('USER LIST 2: ',uqlist);
+  //console.log('USER LIST 2: ',uqlist);
   let dlist = document.getElementById(dashdom.list.cont);
   dlist.innerHTML = '';
   if(uqlist){
@@ -115,13 +115,14 @@ ipcRenderer.on(dashroutes.getkey,(eve,data)=>{
 
         insq.key = beeq.quot.key.insulation;
 
-        refershkey = false;
+        refreshkey = false;
         DropNote('tr','KEY IS UPDATED!','green');
       }
     }else{
       DropNote('tr','KEY NOT FOUND...','red');
       DropNote('tr','USING OLD KEY...','red');
     }
+    console.log("BEEQ::::::::", beeq)
     LOADqlist(beeq); //set
 });
 

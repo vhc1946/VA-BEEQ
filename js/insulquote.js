@@ -50,7 +50,7 @@ class InsulBuild{
       display:[]
     };
 
-    console.log(this.key);
+    //console.log(this.key);
 
     this.SEToptions();
     this.SETpackages();
@@ -76,7 +76,7 @@ class InsulBuild{
     this.data.build.price = 0;
     this.GEToptions();
     this.GETpackages();
-    console.log(this.data.build);
+    //console.log(this.data.build);
 
     this.data.build.info.price = this.data.build.package?Number(this.data.build.options.price)+Number(this.data.build.package.cost):Number(this.data.build.options.price);
 
@@ -134,7 +134,7 @@ class InsulBuild{
     for(let x=0;x<olist.children.length;x++){ //get selected options
       let opt;
       if(olist.children[x].getElementsByClassName(this.insdom.options.option.select)[0].classList.contains('insul-checkbox-checked')){
-        console.log(olist.children[x].getElementsByClassName(this.insdom.options.option.name)[0].innerText);
+        //console.log(olist.children[x].getElementsByClassName(this.insdom.options.option.name)[0].innerText);
 
         opt = this.FINDoption(olist.children[x].getElementsByClassName(this.insdom.options.option.name)[0].innerText);
         opt.quant=(opt.rate=='per')?olist.children[x].getElementsByClassName(this.insdom.options.option.quant)[0].value:1; //add quantity
@@ -158,7 +158,6 @@ class InsulBuild{
     var plist = document.getElementById(this.insdom.packages.list);
     plist.innerHTML='';
     for(let x=0;x<this.key.packages.length;x++){
-      console.log(x)
       let pele = document.createElement('div');
       pele.classList.add(this.insdom.packages.package.cont);
       pele.addEventListener('click',(ele)=>{

@@ -32,25 +32,34 @@ class GBlockBuild extends BottomAddTable{
             display:[]
          };
 
-         this.table.addEventListener('change',(ele)=>{ //gather table changes
+        this.table.addEventListener('change',(ele)=>{ //gather table changes
             this.data.display = this.GETtable(this.GETtablerow);
             this.data.build = this.RUNtable();
          });
 
+        //I don't know why the change event listener isn't registering with delete
+        //Sometimes delete does refresh the table, which is even more confusing.
+        this.table.getElementsByClassName('intable-action-delete')[0].addEventListener('dblclick',(ele)=>{
+            this.data.display = this.GETtable(this.GETtablerow);
+            this.data.build = this.RUNtable();
+            //console.log(this.data.build)
+        })
+
          this.table.children[this.table.children.length-1].children[0].addEventListener('change',(ele)=>{
-             this.SETtablerow({area:ele.target.value});
-             ele.target.value = '';
+            console.log("Table Child Event Listener")
+            this.SETtablerow({area:ele.target.value});
+            ele.target.value = '';
          });
     }
 
     SETgbbuild = (key,data)=>{
-      this.key.SETkey(key);
+        this.key.SETkey(key);
 
-      this.data = data !=null || data != undefined?data:{
-        build:[],
-        display:[]
-      };
-      this.SETtable(this.SETtablerow);
+        this.data = data !=null || data != undefined?data:{
+            build:[],
+            display:[]
+        };
+        this.SETtable(this.SETtablerow);
     }
 
     /*  Create a window row, and add to table
@@ -145,13 +154,15 @@ class GBlockBuild extends BottomAddTable{
             gbuild.glassblocks.push(gblock);
         }
         gbuild.info.price =  gbuild.info.cost /(1-this.key.key.glassblock.margin);
+        console.log("GBBUILD FROM GBQUOTE", gbuild)
         return gbuild;
     }
 
     REFRESHbuild = ()=>{
         this.data.display = this.GETtable(this.GETtablerow);
         this.data.build = this.RUNtable();
-
+        console.log("Refreshed gb build", this.data)
+        return true
     }
     GETbuildhours = (gblocks = [])=>{
         let hours = 0;

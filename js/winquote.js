@@ -225,7 +225,7 @@ class WinBuild extends BottomAddTable{
                   wbuild.tiers[x].cost += win.style.info.uinch * cuin(wtab[y].height,wtab[y].width);
                 }
                 wbuild.tiers[x].windows.push(wtab[y]);
-                console.log(wtab[y]);
+                //console.log(wtab[y]);
             }
           wbuild.tiers[x].cost += wbuild.info.labor.hours * this.key.key.info.labtab.rate; //add the labor to cost
           wbuild.tiers[x].price = wbuild.tiers[x].cost /(1-this.key.key.info.margin);
@@ -235,8 +235,12 @@ class WinBuild extends BottomAddTable{
 
 
     REFRESHbuild=()=>{
+        console.log("About to refresh window build:", this.data, this.key)
+        this.SETstylelist(); //Refresh droplist to reflect changes to styles
         this.data.display = this.GETtable(this.GETtablerow);
         this.data.build = this.RUNtable();
+        console.log("Refreshed window build", this.data)
+        return true
     }
 
     GEToptioncost = (opt,w=0,h=0)=>{
