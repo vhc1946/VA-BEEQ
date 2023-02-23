@@ -335,6 +335,20 @@ class BEEQuote{
         });
 
         winobserver.observe(wintableobserver, {subtree: true, childList: true});
+
+        // Add a mutation observer to detect when a child is removed from each table
+        const addtableobserver = this.addbuild.table;
+
+        const addobserver = new MutationObserver(() => {
+            //console.log('callback that runs when observer is triggered');
+            let refreshed = this.addbuild.REFRESHbuild()
+            if (refreshed) {
+              this.GETquote()
+              this.SAVEquote()
+            }
+        });
+
+        addobserver.observe(addtableobserver, {subtree: true, childList: true});
     }
 
     GETquote = ()=>{
