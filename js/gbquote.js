@@ -37,12 +37,10 @@ class GBlockBuild extends BottomAddTable{
             this.data.build = this.RUNtable();
          });
 
-        //I don't know why the change event listener isn't registering with delete
-        //Sometimes delete does refresh the table, which is even more confusing.
+        //Event listener to refresh on delete
         this.table.getElementsByClassName('intable-action-delete')[0].addEventListener('dblclick',(ele)=>{
             this.data.display = this.GETtable(this.GETtablerow);
             this.data.build = this.RUNtable();
-            //console.log(this.data.build)
         })
 
          this.table.children[this.table.children.length-1].children[0].addEventListener('change',(ele)=>{

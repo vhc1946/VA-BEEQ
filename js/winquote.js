@@ -52,6 +52,12 @@ class WinBuild extends BottomAddTable{
             //update necessary display
         });
 
+        //Event listener to refresh on delete
+        this.table.getElementsByClassName('intable-action-delete')[0].addEventListener('dblclick',(ele)=>{
+            this.data.display = this.GETtable(this.GETtablerow);
+            this.data.build = this.RUNtable();
+        })
+
         //watch last row for any adds to table
         this.table.children[this.table.children.length-1].children[0].addEventListener('change',(ele)=>{
             this.SETtablerow({style:ele.target.value,story:1});

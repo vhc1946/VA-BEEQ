@@ -340,7 +340,7 @@ class BEEQuote{
         const addtableobserver = this.addbuild.table;
 
         const addobserver = new MutationObserver(() => {
-            //console.log('callback that runs when observer is triggered');
+            console.log('callback that runs when observer is triggered');
             let refreshed = this.addbuild.REFRESHbuild()
             if (refreshed) {
               this.GETquote()

@@ -69,6 +69,7 @@ class AddBuild extends BottomAddTable{
     REFRESHbuild = ()=>{
         this.data.display = this.GETtable(this.GETtablerow);
         this.data.build = this.GETtable(this.GETtablerow);
+        return true
     }
 }
 
